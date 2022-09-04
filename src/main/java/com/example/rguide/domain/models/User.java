@@ -27,7 +27,7 @@ public class User implements UserDetails {
 
     private String password;
 
-    @Column(columnDefinition="text")
+    @Column(length = 10000)
     private String image;
 
     @ManyToMany
