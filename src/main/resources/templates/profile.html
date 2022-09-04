@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>Profile</title>
+    <!-- CSS only -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-0evHe/X+R7YkIZDRvuzKMRqM+OrBnVFBL6DOitfPri4tjfHxaWutUpFmBp4vmVor" crossorigin="anonymous">
+    <!-- JavaScript Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/js/bootstrap.bundle.min.js" integrity="sha384-pprn3073KE6tl6bjs2QrFaJGz5/SUsLqktiwsUTF55Jfv3qYSDhgCecCxMW52nD2" crossorigin="anonymous"></script>
+
+</head>
+<body style="background-image: linear-gradient(to bottom right, black, deepskyblue);background-repeat: no-repeat; min-height: 1000px; background-size: cover;background-position: center;">
+<section class="mt-2">
+    <nav class="container navbar navbar-expand  rounded w-75">
+        <img th:src="@{/images/logo.png}"  class="navbar-brand  bg-light rounded-circle  ps-1 pe-1" style="border-radius: 15px; font-weight: bolder; height: 130px" alt="..."/>
+        <a href="/add" class="btn  bg-white ms-auto rounded-pill" style="height: 55px;width: 55px">
+            <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor" class="bi bi-file-plus mt-2" viewBox="0 0 16 16">
+                <path d="M8.5 6a.5.5 0 0 0-1 0v1.5H6a.5.5 0 0 0 0 1h1.5V10a.5.5 0 0 0 1 0V8.5H10a.5.5 0 0 0 0-1H8.5V6z"/>
+                <path d="M2 2a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V2zm10-1H4a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1z"/>
+            </svg>
+        </a>
+    </nav>
+</section>
+<section class="container">
+    <div class="row mt-5 justify-content-center text-white">
+        <figure class="col-3 ms-auto me-auto text-center" style="">
+            <img style="height: 200px; width: auto;border: white solid 5px" alt="..." class="rounded" th:src="${user.image}">
+            <figcaption  th:text="${user.name + ' ' + user.surname}"></figcaption>
+        </figure>
+
+    </div>
+    <div th:if="${!isMe}" class="text-center">
+        <div class="col-3 ms-auto me-auto" th:if="${!doIFollow}">
+            <form method="post" th:action="@{'/user/follow/{id}' (id=${user.id})}">
+                <button class="btn btn-primary" type="submit">Follow</button>
+            </form>
+        </div>
+        <div class="col-3 ms-auto me-auto" th:if="${doIFollow}">
+            <form method="post" th:action="@{'/user/unfollow/{id}' (id=${user.id})}">
+                <button class="btn btn-danger" type="submit">Unfollow</button>
+            </form>
+        </div>
+    </div>
+    <div th:if="${isMe}" class="text-center">
+        <a class="btn btn-light" href="/logout">Logout</a>
+    </div>
+</section>
+
+<div class="container text-center text-white mt-5" >
+    <h4 class="pt-5" th:if="${recipes.size() == 0}">The profile has no recipes :)</h4>
+</div>
+
+<section class="container mt-5">
+    <div  class="text-white row row-cols-3 justify-content-center mb-5">
+
+        <div th:each="recipe : ${recipes}" class="col text-black mt-3 " >
+            <div class="card h-100 shadow"  >
+                <a th:href="@{'/recipe/{id}' (id=${recipe.getId()})}">
+                    <img th:src="${recipe.image}" class="card-img-top" alt="..." style="cursor: pointer">
+                </a>
+                <div class="card-body">
+                    <h5 class="card-title" th:text="${recipe.name}"></h5>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</section>
+
+
+<section>
+    <nav class="navbar navbar-expand fixed-bottom">
+        <div class="container ">
+            <ul class="navbar-nav me-auto ms-auto ps-5 pe-5 pb-2 pt-2 border border-secondary rounded-pill bg-light">
+                <li class="nav-item">
+                    <a class="btn border border-secondary rounded-pill nav-item ps-4 pe-4 " href="/home">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-house-fill" viewBox="0 0 16 16">
+                            <path fill-rule="evenodd" d="m8 3.293 6 6V13.5a1.5 1.5 0 0 1-1.5 1.5h-9A1.5 1.5 0 0 1 2 13.5V9.293l6-6zm5-.793V6l-2-2V2.5a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5z"/>
+                            <path fill-rule="evenodd" d="M7.293 1.5a1 1 0 0 1 1.414 0l6.647 6.646a.5.5 0 0 1-.708.708L8 2.207 1.354 8.854a.5.5 0 1 1-.708-.708L7.293 1.5z"/>
+                        </svg>
+                    </a>
+                </li>
+                <li class="nav-item ms-3">
+                    <a class="btn border border-secondary rounded-pill nav-item ps-4 pe-4" href="/explore">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-search" viewBox="0 0 16 16">
+                            <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z"/>
+                        </svg>
+                    </a>
+                </li>
+                <li class="nav-item ms-3">
+                    <a class="btn border border-secondary rounded-pill nav-item ps-4 pe-4"  th:href="${'/user/' + #authentication.getPrincipal().getId()}">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-person-lines-fill" viewBox="0 0 16 16">
+                            <path d="M6 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm-5 6s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1H1zM11 3.5a.5.5 0 0 1 .5-.5h4a.5.5 0 0 1 0 1h-4a.5.5 0 0 1-.5-.5zm.5 2.5a.5.5 0 0 0 0 1h4a.5.5 0 0 0 0-1h-4zm2 3a.5.5 0 0 0 0 1h2a.5.5 0 0 0 0-1h-2zm0 3a.5.5 0 0 0 0 1h2a.5.5 0 0 0 0-1h-2z"/>
+                        </svg>
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+</section>
+</body>
+</html>
