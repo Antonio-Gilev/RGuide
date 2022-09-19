@@ -1,0 +1,36 @@
+version: "3"
+
+services:
+  postgres:
+    image: "postgres"
+    container_name: "postgres"
+    healthcheck:
+      test: [ "CMD", "pg_isready", "-q", "-d", "postgres", "-U", "postgres" ]
+      timeout: 45s
+      interval: 10s
+      retries: 10
+    restart: always
+    environment:
+       - POSTGRES_USER=postgres
+       - POSTGRES_PASSWORD=123
+       - POSTGRES_DB=recipe_guide
+    volumes:
+      - ./db:/docker-entrypoint-initdb.d/
+    ports:
+      - "5432:5432"
+  rguide:
+    depends_on:
+      - postgres
+    image: rguide.jar
+    build:
+      context: ./
+      dockerfile: Dockerfile
+    environment:
+      SPRING_DATASOURCE_URL:  jdbc:postgresql://postgres:5432/recipe_guide
+    ports:
+      - "8080:8080"
+  prometheus:
+    image: prom/prometheus
+    ports:
+      - "9090:9090"
+    command: --web.enable-lifecycle  --config.file=/etc/prometheus/prometheus.yml
